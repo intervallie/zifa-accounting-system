@@ -1,0 +1,84 @@
+<!-- account_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Create Account</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="code">Code:</label>
+                <input type="text" class="form-control" id="code" name="code">
+            </div>
+            <div class="form-group" id="parent_code_div" style="display:none;">
+                <label for="parent_account">Parent Account:</label>
+                <select class="form-control" id="parent_account" name="parent_account">
+                    <option value="">Select Parent Account</option>
+                    {% for code, account_name in parent_accounts %}
+                        <option value="{{ code }}">{{ code }} - {{ account_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="child_node" name="child_node">
+                <label class="form-check-label" for="child_node">Child Node</label>
+            </div>
+            <div class="form-group" id="account_type_div">
+                <label for="account_type">Account Type:</label>
+                <select class="form-control" id="account_type" name="account_type">
+                    <option value="KB">Kas & Bank</option>
+                    <option value="PU">Piutang Usaha</option>
+                    <option value="Per">Persediaan</option>
+                    <option value="ALL">Aset Lancar Lainnya</option>
+                    <option value="AT">Aset Tetap</option>
+                    <option value="AP">Akumulasi Penyusutan</option>
+                    <option value="AL">Aset Lainnya</option>
+                    <option value="UU">Utang Usaha</option>
+                    <option value="LJPe">Liabilitas Jangka Pendek</option>
+                    <option value="LJPa">Liabilitas Jangka Panjang</option>
+                    <option value="M">Modal</option>
+                    <option value="Pen">Pendapatan</option>
+                    <option value="BPP">Beban Pokok Penjualan</option>
+                    <option value="B">Beban</option>
+                    <option value="BL">Beban Lainnya</option>
+                    <option value="PL">Pendapatan Lainnya</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="account_name">Account Name:</label>
+                <input type="text" class="form-control" id="account_name" name="account_name">
+            </div>
+            <div class="form-group">
+                <label for="balance">Balance:</label>
+                <input type="number" class="form-control" id="balance" name="balance">
+            </div>
+            <div class="form-group">
+                <label for="notes">Notes:</label>
+                <textarea class="form-control" id="notes" name="notes"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#child_node').change(function() {
+                if (this.checked) {
+                    $('#parent_code_div').show();
+                } else {
+                    $('#parent_code_div').hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
