@@ -1,18 +1,28 @@
 from django.shortcuts import redirect, render, get_object_or_404
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseForbidden, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from .models import Journal, Transaction
 from charts_of_account.models import ChartsOfAccount
 
+def login_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@login_required
 def journal_list(request):
     journals = Journal.objects.all()
     return render(request, 'journal_list.html', {'journals': journals})
 
+@login_required
 def journal_detail(request, journal_num):
     journal = get_object_or_404(Journal, pk=journal_num)
     transactions = Transaction.objects.filter(journal_code=journal_num)
     return render(request, 'journal_detail.html', {'journal': journal, 'transactions': transactions})
 
+@login_required
 def journal_create(request):
     #by default credit and debit equal 0
     if request.method == 'POST':
@@ -24,7 +34,8 @@ def journal_create(request):
         return redirect('journal_detail', journal_num=journal_num)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
-
+    
+@login_required
 def journal_update(request, journal_num):
     #only update journal_date, journal_num, and desc
     journal = get_object_or_404(Journal, pk=journal_num)
@@ -37,6 +48,7 @@ def journal_update(request, journal_num):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+@login_required
 def journal_delete(request, journal_num):
     journal = get_object_or_404(Journal, pk=journal_num)
     transactions = Transaction.objects.all()
@@ -58,6 +70,7 @@ def journal_delete(request, journal_num):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+@login_required
 def transaction_create(request, journal_code):
     if request.method == 'POST':
         acc_code = request.POST.get('acc_code')
@@ -85,6 +98,7 @@ def transaction_create(request, journal_code):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+@login_required
 def transaction_update(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
     account_src = get_object_or_404(ChartsOfAccount, pk=transaction.acc_code)
@@ -118,6 +132,7 @@ def transaction_update(request, transaction_id):
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
+@login_required
 def transaction_delete(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
     account = get_object_or_404(ChartsOfAccount, pk=transaction.acc_code)

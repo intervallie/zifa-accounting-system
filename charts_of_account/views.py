@@ -1,11 +1,21 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import ChartsOfAccount
 
+def login_required(view_func):
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return HttpResponseForbidden()
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+@login_required
 def account_list(request):
     accounts = ChartsOfAccount.objects.all()
     parent_accounts = [(account.code, account.account_name) for account in accounts]
     return render(request, 'account_list.html', {'accounts': accounts, 'parent_accounts': parent_accounts})
 
+@login_required
 def account_create(request):
     if request.method == 'POST':
         # Extracting parameters from the GET request
@@ -37,6 +47,7 @@ def account_create(request):
     parent_accounts = [(account.code, account.account_name) for account in existing_accounts]
     return render(request, 'account_form.html', {'parent_accounts': parent_accounts})
 
+@login_required
 def account_update(request, pk):
     account = get_object_or_404(ChartsOfAccount, pk=pk)
     if request.method == 'POST':
@@ -62,6 +73,7 @@ def account_update(request, pk):
 
     return render(request, 'account_form.html')
 
+@login_required
 def account_delete(request, pk):
     account = get_object_or_404(ChartsOfAccount, pk=pk)
     if request.method == 'POST':
