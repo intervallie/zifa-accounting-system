@@ -7,7 +7,7 @@ from charts_of_account.models import ChartsOfAccount
 def login_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseForbidden()
+            return redirect(reverse("user_auth:login"))
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -31,7 +31,7 @@ def journal_create(request):
         desc = request.POST.get('desc')
         journal = Journal(journal_num=journal_num, journal_date=journal_date, desc=desc, credit_sum=0, debit_sum=0)
         journal.save()
-        return redirect('journal_detail', journal_num=journal_num)
+        return redirect('journal:journal_detail', journal_num=journal_num)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
     
@@ -44,7 +44,7 @@ def journal_update(request, journal_num):
         journal.journal_date = request.POST.get('journal_date')
         journal.desc = request.POST.get('desc')
         journal.save()
-        return redirect('journal_detail', journal_num=journal_num)
+        return redirect('journal:journal_detail', journal_num=journal_num)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
@@ -65,7 +65,7 @@ def journal_delete(request, journal_num):
                 tr.delete()
 
         journal.delete()
-        return redirect('journal_list')
+        return redirect('journal:journal_list')
     
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
@@ -75,26 +75,29 @@ def transaction_create(request, journal_code):
     if request.method == 'POST':
         acc_code = request.POST.get('acc_code')
         trans_type = request.POST.get('trans_type')
-        value = request.POST.get('value')
-        
-        account_src = get_object_or_404(ChartsOfAccount, pk=acc_code)
-        journal = get_object_or_404(Journal, journal_code)
+        value = int(request.POST.get('value'))
+        journal_num = str(journal_code)
 
+        account_src = get_object_or_404(ChartsOfAccount, pk=acc_code)
+        journal = get_object_or_404(Journal, pk=journal_num)
+        print(journal.credit_sum, journal.debit_sum)
         #Update the balance and credit sum with the new transaction value
-        if request.POST.get('trans_type') == 'Kredit':
+        if request.POST.get('trans_type') == 'KRD':
             account_src.balance -= value
             journal.credit_sum += value
         #Update the balance and credit sum with the new transaction value
         else:
             account_src.balance += value
             journal.debit_sum += value
-
-        trans = Transaction(acc_code=acc_code,
-                            journal_code=journal_code,
+        trans = Transaction(acc_code=account_src,
+                            journal_code=journal,
                             trans_type=trans_type,
                             value=value)
+        print(journal.credit_sum, journal.debit_sum)
         trans.save()
-        return redirect('journal_detail', journal_num=journal.journal_num)
+        journal.save()
+        account_src.save()
+        return redirect('journal:journal_detail', journal_num=journal.journal_num)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
@@ -106,7 +109,7 @@ def transaction_update(request, transaction_id):
     journal = get_object_or_404(Journal, pk=transaction.journal_code)
     if request.method == 'POST':
         #The previous transaction value will be added into account balance, but will be reduced the journal credit value
-        if transaction.trans_type == 'Kredit':
+        if transaction.trans_type == 'KRD':
             account_src.balance += transaction.value
             journal.credit_sum -= transaction.value
         #The previous transaction value will be added into account balance, but will be reduced the journal credit value
@@ -115,7 +118,7 @@ def transaction_update(request, transaction_id):
             journal.debit_sum -= transaction.value
         
         #Update the balance and credit sum with the new transaction value
-        if request.POST.get('trans_type') == 'Kredit':
+        if request.POST.get('trans_type') == 'KRD':
             account_dest.balance -= transaction.value
             journal.credit_sum += transaction.value
         #Update the balance and credit sum with the new transaction value
@@ -128,19 +131,22 @@ def transaction_update(request, transaction_id):
         transaction.value = request.POST.get('value')
 
         transaction.save()
-        return redirect('journal_detail', journal_num=journal.journal_num)
+        journal.save()
+        account_src.save()
+        account_dest.save()
+        return redirect('journal:journal_detail', journal_num=journal.journal_num)
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 @login_required
 def transaction_delete(request, transaction_id):
     transaction = get_object_or_404(Transaction, pk=transaction_id)
-    account = get_object_or_404(ChartsOfAccount, pk=transaction.acc_code)
-    journal = get_object_or_404(Journal, pk=transaction.journal_code)
+    account = transaction.acc_code
+    journal = transaction.journal_code
 
     if request.method == 'POST':
         #When delete, transaction value will be added into account balance, but will be reduced the journal credit value
-        if transaction.trans_type == 'Kredit':
+        if transaction.trans_type == 'KRD':
             account.balance += transaction.value
             journal.credit_sum -= transaction.value
         #When delete, transaction value will be added into account balance, but will be reduced the journal credit value
@@ -148,7 +154,9 @@ def transaction_delete(request, transaction_id):
             account.balance -= transaction.value
             journal.debit_sum -= transaction.value
         transaction.delete()
-        return redirect('journal_detail', journal_num=journal.journal_num)
+        journal.save()
+        account.save()
+        return redirect('journal:journal_detail', journal_num=journal.journal_num)
 
     else:
         return JsonResponse({'success': False, 'message': 'Invalid request method.'})

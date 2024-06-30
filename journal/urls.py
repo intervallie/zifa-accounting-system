@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import journal_create, journal_detail, journal_delete, journal_list, journal_update, transaction_create, transaction_delete, transaction_update
 
+app_name = 'journal'
 urlpatterns = [
     path('', journal_list, name='journal_list'),
     path('journal-detail/<int:journal_num>/', journal_detail, name='journal_detail'),

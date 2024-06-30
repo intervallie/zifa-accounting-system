@@ -1,11 +1,12 @@
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from .models import ChartsOfAccount
 
 def login_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return HttpResponseForbidden()
+            return redirect(reverse("user_auth:login"))
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -41,7 +42,7 @@ def account_create(request):
             notes=notes
         )
 
-        return redirect('account_list')
+        return redirect('charts_of_account:account_list')
 
     existing_accounts = ChartsOfAccount.objects.all()
     parent_accounts = [(account.code, account.account_name) for account in existing_accounts]
@@ -69,7 +70,7 @@ def account_update(request, pk):
         # Save the updated ChartsOfAccount instance
         account.save()
 
-        return redirect('account_list')
+        return redirect('charts_of_account:account_list')
 
     return render(request, 'account_form.html')
 
@@ -78,5 +79,5 @@ def account_delete(request, pk):
     account = get_object_or_404(ChartsOfAccount, pk=pk)
     if request.method == 'POST':
         account.delete()
-        return redirect('account_list')
+        return redirect('charts_of_account:account_list')
     return render(request, 'account_confirm_delete.html', {'account': account})

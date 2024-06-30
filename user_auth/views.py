@@ -7,8 +7,10 @@ from .models import UserAccount
 
 def admin_required(view_func):
     def _wrapped_view(request, *args, **kwargs):
-        if not request.user.is_authenticated or not request.user.is_superuser:
-            return HttpResponseForbidden()
+        if not request.user.is_authenticated:
+            return redirect(reverse("user_auth:login"))
+        if not request.user.is_superuser:
+            return redirect(reverse("charts_of_account:account_list"))
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -21,7 +23,7 @@ def register(request):
         if username and password:
             UserAccount.objects.create_user(username=username, password=password, role=role)
             messages.success(request, 'User registered successfully!')
-            return redirect(reverse('login'))
+            return redirect(reverse('user_auth:login'))
         else:
             return JsonResponse({'success': False, 'message': 'Registration Failed.'})
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
@@ -34,7 +36,7 @@ def user_login(request):
         if user is not None:
             auth_login(request, user)
             messages.success(request, 'Login successful!')
-            return redirect(reverse('admin_management'))
+            return redirect(reverse('user_auth:admin_management'))
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'login.html')
@@ -56,7 +58,7 @@ def modify_account(request, user_id):
         print(user.username, user.role, user.is_active)
         user.save()
         print(user.username, user.role, user.is_active)
-        return redirect(reverse('admin_management'))
+        return redirect(reverse('user_auth:admin_management'))
     except UserAccount.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'User does not exist.'})
     except Exception as e:
@@ -65,4 +67,4 @@ def modify_account(request, user_id):
 def user_logout(request):
     logout(request)
     messages.info(request, "Logged out successfully!")
-    return redirect(reverse("login"))
+    return redirect(reverse("user_auth:login"))
