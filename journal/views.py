@@ -20,6 +20,7 @@ def journal_list(request):
 def journal_detail(request, journal_num):
     journal = get_object_or_404(Journal, pk=journal_num)
     transactions = Transaction.objects.filter(journal_code=journal_num)
+    print(journal.debit_sum, journal.credit_sum)
     return render(request, 'journal_detail.html', {'journal': journal, 'transactions': transactions})
 
 @login_required

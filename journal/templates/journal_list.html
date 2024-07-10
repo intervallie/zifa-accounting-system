@@ -25,6 +25,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'journal:journal_list' %}">Transaction</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'report:report_landing_page' %}">Report</a>
+            </li>
             </ul>
           </div>
           
@@ -72,7 +75,7 @@
                 <div class="modal fade" id="editJournalModal{{ journal.journal_num }}" tabindex="-1" aria-labelledby="editJournalModalLabel{{ journal.journal_num }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <!-- Edit Journal Form (Replace with your form) -->
+                            <!-- Edit Journal Form -->
                             <form method="POST" action="{% url 'journal:journal_update' journal.journal_num %}">
                                 {% csrf_token %}
                                 <div class="modal-header">
@@ -82,9 +85,23 @@
                                 <div class="modal-body">
                                     <!-- Your form fields here -->
                                     <!-- Example: -->
-                                    <input type="text" name="journal_num" value="{{ journal.journal_num }}">
-                                    <input type="text" name="journal_date" value="{{ journal.journal_date }}">
-                                    <input type="text" name="desc" value="{{ journal.desc }}">
+                                    <div class="mb-3">
+                                        <label for="journal_num" class="form-label">Journal Number</label>
+                                        <input type="text" class="form-control" id="journal_num_{{ journal.journal_num }}" name="journal_num" value="{{ journal.journal_num }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="journal_date" class="form-label">Journal Date</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="journal_date" name="journal_date" value="{{ journal.journal_date }}">
+                                            <button class="btn btn-outline-secondary" type="button" id="datepicker-trigger-{{ journal.journal_num }}">
+                                                <i class="bi bi-calendar"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="desc" class="form-label">Description</label>
+                                        <input type="text" class="form-control" id="desc_{{ journal.journal_num }}" name="desc" value="{{ journal.desc }}">
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

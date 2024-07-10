@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neraca Report</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                Zifa Accounting System
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'charts_of_account:account_list' %}">Charts of Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'journal:journal_list' %}">Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'report:report_landing_page' %}">Report</a>
+                    </li>
+                </ul>
+            </div>
+            <form class="d-flex">
+                <a href="{% url 'user_auth:logout' %}" class="btn btn-danger">Logout</a>
+            </form>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Laporan Neraca {{ start_date }} - {{ end_date }}</h1>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Deskripsi</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><p class="font-weight-bold">Pendapatan</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3 font-weight-bold">Penjualan</p></td>
+                    <td>{{ list_of_report.0 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3 font-weight-bold">Harga Pokok Penjualan</p></td>
+                    <td>{{ list_of_report.1 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="text-center font-weight-bold">Laba Kotor</p></td>
+                    <td>{{ list_of_report.2 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="font-weight-bold">Beban</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3">Beban 1</p></td>
+                    <td>{{ list_of_report.3 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3">Beban 2</p></td>
+                    <td>{{ list_of_report.4 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3">Beban 3</p></td>
+                    <td>{{ list_of_report.5 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="text-center font-weight-bold">Laba Sebelum Pajak</p></td>
+                    <td>{{ list_of_report.6 }}</td>
+                </tr>
+                <tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

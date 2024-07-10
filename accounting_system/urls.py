@@ -21,4 +21,5 @@ urlpatterns = [
     path('user/', include('user_auth.urls')),
     path('accounts/', include('charts_of_account.urls')),
     path('journal/', include('journal.urls')),
+    path('report/', include('accounting_report.urls')),
 ]

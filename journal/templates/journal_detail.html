@@ -25,6 +25,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'journal:journal_list' %}">Transaction</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'report:report_landing_page' %}">Report</a>
+            </li>
             </ul>
           </div>
           
@@ -91,7 +94,7 @@
                                 <div class="modal-body">
                                     <!-- Your form fields here -->
                                     <!-- Example: -->
-                                    <input type="text" name="acc_code" value="{{ transaction.acc_code }}">
+                                    <input type="text" name="acc_code" value="{{ transaction.acc_code.code }}">
                                     <input type="text" name="trans_type" value="{{ transaction.trans_type }}">
                                     <input type="text" name="value" value="{{ transaction.value }}">
                                 </div>

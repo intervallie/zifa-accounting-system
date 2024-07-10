@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "journal",
     "user_auth",
     "charts_of_account",
+    "accounting_report"
 ]
 AUTH_USER_MODEL = 'user_auth.UserAccount'
 

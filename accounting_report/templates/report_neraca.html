@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neraca Report</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                Zifa Accounting System
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'charts_of_account:account_list' %}">Charts of Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'journal:journal_list' %}">Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'report:report_landing_page' %}">Report</a>
+                    </li>
+                </ul>
+            </div>
+            <form class="d-flex">
+                <a href="{% url 'user_auth:logout' %}" class="btn btn-danger">Logout</a>
+            </form>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Laporan Laba Rugi {{end_date}}</h1>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Deskripsi</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><p class="font-weight-bold">ASET</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Aset Lancar</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><p class="ml-3 font-weight-bold">Kas dan Bank</p></td>
+                    <td></td>
+                </tr>
+                {% if list_of_report.0 != 0 %}
+                <tr>
+                    <td><p class="ml-5">Kas</p></td>
+                    <td>{{ list_of_report.0 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.1 != 0 %}
+                <tr>
+                    <td><p class="ml-5">Bank</p></td>
+                    <td>{{ list_of_report.1 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.2 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Piutang</p></td>
+                    <td>{{ list_of_report.2 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.3 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Persediaan</p></td>
+                    <td>{{ list_of_report.3 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Jumlah Aset Lancar</p></td>
+                    <td>{{ list_of_report.4 }}</td>
+                </tr>
+
+                {% if list_of_report.5 != 0 %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Aset Tetap</p></td>
+                    <td>{{ list_of_report.5 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.6 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Tanah</p></td>
+                    <td>{{ list_of_report.6 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.7 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Kendaraan</p></td>
+                    <td>{{ list_of_report.7 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.8 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Peralatan</p></td>
+                    <td>{{ list_of_report.8 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.9 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Bangunan dan Gedung</p></td>
+                    <td>{{ list_of_report.9 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.10 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Akumulasi Penyusutan</p></td>
+                    <td>{{ list_of_report.10 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Jumlah Aset Tetap</p></td>
+                    <td>{{ list_of_report.11 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="text-center font-weight-bold">JUMLAH ASET</p></td>
+                    <td>{{ list_of_report.12 }}</td>
+                </tr>
+
+                <tr>
+                    <td><p class="font-weight-bold">LIABILITAS</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Liabilitas Jangka Pendek</p></td>
+                    <td></td>
+                </tr>
+                {% if list_of_report.13 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Utang Dagang</p></td>
+                    <td>{{ list_of_report.13 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.14 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Utang Pemegang Saham</p></td>
+                    <td>{{ list_of_report.14 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Jumlah Liabilitas Jangka Pendek</p></td>
+                    <td>{{ list_of_report.15 }}</td>
+                </tr>
+
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Liabilitas Jangka Panjang</p></td>
+                    <td></td>
+                </tr>
+                {% if list_of_report.16 != 0 %}
+                <tr>
+                    <td><p class="ml-3">Utang Bank</p></td>
+                    <td>{{ list_of_report.16 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Jumlah Liabilitas Jangka Panjang</p></td>
+                    <td>{{ list_of_report.17 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="text-center font-weight-bold">JUMLAH LIABILITAS</p></td>
+                    <td>{{ list_of_report.18 }}</td>
+                </tr>
+                
+                {% if list_of_report.19 != 0 %}
+                <tr>
+                    <td><p class="font-weight-bold">EKUITAS</p></td>
+                    <td>{{ list_of_report.19 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.20 != 0 %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Modal Disetor</p></td>
+                    <td>{{ list_of_report.20 }}</td>
+                </tr>
+                {% endif %}
+                {% if list_of_report.21 != 0 %}
+                <tr>
+                    <td><p class="ml-1 font-weight-bold">Laba Ditahan</p></td>
+                    <td>{{ list_of_report.21 }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td><p class="text-center font-weight-bold">JUMLAH EKUITAS</p></td>
+                    <td>{{ list_of_report.22 }}</td>
+                </tr>
+                <tr>
+                    <td><p class="text-center font-weight-bold">JUMLAH EKUITAS DAN LIABILITAS</p></td>
+                    <td>{{ list_of_report.23 }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

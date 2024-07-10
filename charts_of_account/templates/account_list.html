@@ -1,5 +1,3 @@
-{% load custom_filters %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +9,6 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <!-- Left Section: Logo and URLs -->
             <a class="navbar-brand" href="#">
                 Zifa Accounting System
             </a>
@@ -26,10 +23,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'journal:journal_list' %}">Transaction</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'report:report_landing_page' %}">Report</a>
+                    </li>
                 </ul>
             </div>
-
-            <!-- Right Section: Logout Button -->
             <form class="d-flex">
                 <a href="{% url 'user_auth:logout' %}" class="btn btn-danger">Logout</a>
             </form>
@@ -37,7 +35,6 @@
     </nav>
     <div class="container mt-5">
         <h1>Account List</h1>
-        <!-- Create Button -->
         <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#createModal">Create Account</button>
 
         <table class="table">
@@ -58,18 +55,15 @@
                     <td>{{ account.account_type }}</td>
                     <td>{{ account.balance }}</td>
                     <td>
-                        <!-- Update Modal Trigger -->
-                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal{{ account.code|replace_dot }}">Update</button>
-
-                        <!-- Delete Modal Trigger -->
-                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ account.code|replace_dot }}">Delete</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateModal{{ account.code|slugify }}">Update</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ account.code|slugify }}">Delete</button>
                     </td>
                 </tr>
-                <div class="modal fade" id="updateModal{{ account.code|replace_dot }}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel{{ account.code|replace_dot }}" aria-hidden="true">
+                <div class="modal fade" id="updateModal{{ account.code|slugify }}" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel{{ account.code|slugify }}" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="updateModalLabel{{ account.code|replace_dot }}">Update Account</h5>
+                                <h5 class="modal-title" id="updateModalLabel{{ account.code|slugify }}">Update Account</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -83,9 +77,9 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="update_child_node">Is Child Node?</label>
-                                        <input type="checkbox" id="update_child_node{{ account.code|replace_dot }}" name="update_child_node">
+                                        <input type="checkbox" id="update_child_node{{ account.code|slugify }}" name="update_child_node">
                                     </div>
-                                    <div class="form-group" id="parent_account_form_update{{ account.code|replace_dot }}" style="display: none;">
+                                    <div class="form-group" id="parent_account_form_update{{ account.code|slugify }}" style="display: none;">
                                         <label for="update_parent_account">Parent Account</label>
                                         <select class="form-control" id="update_parent_account" name="parent_account">
                                             <option value="">Select Parent Account</option>
@@ -117,7 +111,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="update_account_name">Nama</label>
-                                        <input type="text" class="form-control" id="update_account_name" name="account_name" value="{{ account.name }}" required>
+                                        <input type="text" class="form-control" id="update_account_name" name="account_name" value="{{ account.account_name }}" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="update_balance">Saldo</label>
@@ -136,14 +130,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal fade" id="deleteModal{{ account.code|replace_dot }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ account.code|replace_dot }}" aria-hidden="true">
-                    <!-- Add your delete form here -->
+                <div class="modal fade" id="deleteModal{{ account.code|slugify }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ account.code|slugify }}" aria-hidden="true">
                     <form action="{% url 'charts_of_account:account_delete' account.code|urlencode %}" method="post">
                         {% csrf_token %}
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteModalLabel{{ account.code|replace_dot }}">Delete Account</h5>
+                                    <h5 class="modal-title" id="deleteModalLabel{{ account.code|slugify }}">Delete Account</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
@@ -164,7 +157,6 @@
         </table>
     </div>
 
-    <!-- Create Account Modal -->
     <div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -237,7 +229,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
